@@ -11,6 +11,6 @@ pyecharts==1.9.1
 requests==2.26.0
 retry==0.9.2
 seaborn==0.11.0
-setuptools==52.0.0.post20210125
+setuptools
 SQLAlchemy==1.4.22
 tqdm==4.62.1

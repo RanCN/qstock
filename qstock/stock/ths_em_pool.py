@@ -22,7 +22,7 @@ def ths_pool(ta=None):
      '量价齐跌'，'强势股',f'u{n}',f'd{n}',n=
      10、20、30、60、90、250、500，突破n日均线
      如'u20'代表向上突破20日均线，'d10'：跌破10日均线
-     
+
     '''
     u={"历史新高":1,"一年新高":2,"半年新高":3,"创月新高":4}
     d={"历史新低":1,"一年新低":2,"半年新低":3,"创月新低":4}
@@ -31,7 +31,7 @@ def ths_pool(ta=None):
     dns=['d'+str(n) for n in ns]
     uns_dict=dict(zip(uns,ns))
     dns_dict=dict(zip(dns,ns))
-    
+
     if ta in ['ljqs','量价齐升']:
         return ths_price_vol('ljqs')
     elif ta in ['ljqd','量价齐跌']:
@@ -46,12 +46,12 @@ def ths_pool(ta=None):
         return ths_vol_change(flag='cxfl')
     elif ta in ['cxsl' ,'持续缩量']:
         return ths_vol_change(flag='cxsl')
-   
+
     elif ta in u.keys():
         return ths_break_price(flag= "cxg",n=u[ta])
     elif ta in d.keys():
         return ths_break_price(flag= "cxd",n=d[ta])
-    
+
     elif ta in uns:
         return ths_break_ma(flag='xstp',n=uns_dict[ta])
     elif ta in dns:
@@ -113,7 +113,7 @@ def stock_zt_pool(date= None) :
     df['首次封板时间'] = df['首次封板时间'].apply(lambda s:str(s)[-6:-4]+':'+str(s)[-4:-2])
     df['最后封板时间'] = df['最后封板时间'].apply(lambda s:str(s)[-6:-4]+':'+str(s)[-4:-2])
     df['最新价'] = df['最新价'] / 1000
-   
+
     # 将object类型转为数值型
     ignore_cols = ['代码','名称','最新价','首次封板时间','最后封板时间','涨停统计','所属行业',]
     df = trans_num(df, ignore_cols)
@@ -235,10 +235,10 @@ def ths_break_price(flag= "cxg",n=1):
     page=1
     url = url0+f"{flag}/board/{n}/field/stockcode/order/asc/page/{page}/ajax/1/free/1/"
     df=fetch_ths_data(url)
-        
+
     df.columns = ["序号","股票代码","股票简称","涨跌幅","换手率","最新价",
         "前期点位","前期点位日期",]
-    
+
     df["股票代码"] = df["股票代码"].astype(str).str.zfill(6)
     df["涨跌幅"] = df["涨跌幅"].str.strip("%")
     df["换手率"] = df["换手率"].str.strip("%")
@@ -257,7 +257,7 @@ def ths_up_down(flag='lxsz'):
     page=1
     url = url0+f"{flag}/field/lxts/order/desc/page/{page}/ajax/1/free/1/"
     df=fetch_ths_data(url)
-    
+
     df.columns = ["序号", "股票代码","股票简称","收盘价","最高价",
         "最低价","连涨天数","连续涨跌幅","累计换手率","所属行业",]
     df["股票代码"] = df["股票代码"].astype(str).str.zfill(6)
@@ -278,7 +278,7 @@ def ths_vol_change(flag='cxfl'):
     page=1
     url =url0+ f"{flag}/field/count/order/desc/ajax/1/free/1/page/{page}/free/1/"
     df=fetch_ths_data(url)
-        
+
     df.columns = ["序号","股票代码","股票简称","涨跌幅","最新价","成交量",
         "基准日成交量","天数","阶段涨跌幅","所属行业",]
     df["股票代码"] = df["股票代码"].astype(str).str.zfill(6)
@@ -298,7 +298,7 @@ def ths_break_ma(flag='xstp',n=20):
     page=1
     url =url0+ f"{flag}/board/{n}/order/asc/ajax/1/free/1/page/{page}/free/1/"
     df=fetch_ths_data(url)
-        
+
     df.columns = ["序号","股票代码","股票简称","最新价","成交额","成交量(万)",
         "涨跌幅","换手率",]
     df["股票代码"] = df["股票代码"].astype(str).str.zfill(6)
@@ -316,8 +316,9 @@ def ths_price_vol(flag='ljqs'):
     """
     page=1
     url = url0+f"{flag}/field/count/order/desc/ajax/1/free/1/page/{page}/free/1/"
+    print(url)
     df=fetch_ths_data(url)
-        
+
     df.columns = ["序号","股票代码","股票简称","最新价",
         "天数","阶段涨幅","累计换手率","所属行业",]
     df["股票代码"] = df["股票代码"].astype(str).str.zfill(6)
@@ -333,7 +334,7 @@ def ths_xzjp():
     """
     url = "http://data.10jqka.com.cn/ajax/xzjp/field/DECLAREDATE/order/desc/ajax/1/free/1/"
     df=fetch_ths_data(url)
-        
+
     df.columns = ["序号","举牌公告日","股票代码","股票简称","现价","涨跌幅",
         "举牌方","增持数量(万)","交易均价","增持数量占总股本比例","变动后持股总数(万)",
         "变动后持股比例","历史数据",]
@@ -341,10 +342,10 @@ def ths_xzjp():
     df["涨跌幅"] = df["涨跌幅"].astype(str).str.zfill(6)
     df["增持数量占总股本比例"] = df["增持数量占总股本比例"].astype(str).str.strip("%")
     df["增持数量(万)"] = df["增持数量(万)"].astype(str).str.strip("万").astype(float)
-    df["变动后持股总数(万)"] = df["变动后持股总数(万)"].apply(lambda s: float(s.strip("亿"))*10000 
+    df["变动后持股总数(万)"] = df["变动后持股总数(万)"].apply(lambda s: float(s.strip("亿"))*10000
                                 if s.endswith('亿') else float(s.strip("万")) )
     df["变动后持股比例"] = df["变动后持股比例"].astype(str).str.strip("%")
-    
+
     df["举牌公告日"] = pd.to_datetime(df["举牌公告日"]).dt.date
     del df["历史数据"]
     ignore_cols = ["股票代码","股票简称","举牌方","举牌公告日"]

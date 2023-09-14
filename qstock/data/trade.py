@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 '''
-@Author  ：Jinyi Zhang 
-@Date    ：2022/9/29 20:27 
+@Author  ：Jinyi Zhang
+@Date    ：2022/9/29 20:27
 '''
 
 import json
@@ -401,13 +401,13 @@ def get_1min_data(code, n=5):
 def realtime_change(flag=None):
     '''
     flag：盘口异动类型，默认输出全部类型的异动情况
-    可选：['火箭发射', '快速反弹','加速下跌', '高台跳水', '大笔买入', '大笔卖出', 
-        '封涨停板','封跌停板', '打开跌停板','打开涨停板','有大买盘','有大卖盘', 
-        '竞价上涨', '竞价下跌','高开5日线','低开5日线',  '向上缺口','向下缺口', 
+    可选：['火箭发射', '快速反弹','加速下跌', '高台跳水', '大笔买入', '大笔卖出',
+        '封涨停板','封跌停板', '打开跌停板','打开涨停板','有大买盘','有大卖盘',
+        '竞价上涨', '竞价下跌','高开5日线','低开5日线',  '向上缺口','向下缺口',
         '60日新高','60日新低','60日大幅上涨', '60日大幅下跌']
     '''
     #默认输出市场全部类型的盘口异动情况（相当于短线精灵）
-    changes_list=['火箭发射', '快速反弹','加速下跌', '高台跳水', '大笔买入', 
+    changes_list=['火箭发射', '快速反弹','加速下跌', '高台跳水', '大笔买入',
         '大笔卖出', '封涨停板','封跌停板', '打开跌停板','打开涨停板','有大买盘',
         '有大卖盘', '竞价上涨', '竞价下跌','高开5日线','低开5日线', '向上缺口',
         '向下缺口', '60日新高','60日新低','60日大幅上涨', '60日大幅下跌']
@@ -418,7 +418,7 @@ def realtime_change(flag=None):
             flag=change_dict[flag]
         return stock_changes(symbol=flag)
     else:
-        
+
         df=stock_changes(symbol=changes_list[0])
         for s in changes_list[1:]:
             temp=stock_changes(symbol=s)
@@ -431,10 +431,10 @@ def stock_changes(symbol):
     """
     东方财富行盘口异动
     http://quote.eastmoney.com/changes/
-    :symbol:  {'火箭发射', '快速反弹', '大笔买入', '封涨停板', '打开跌停板', 
-               '有大买盘', '竞价上涨', '高开5日线', '向上缺口', '60日新高', 
-               '60日大幅上涨', '加速下跌', '高台跳水', '大笔卖出', '封跌停板', 
-               '打开涨停板', '有大卖盘', '竞价下跌', '低开5日线', '向下缺口', 
+    :symbol:  {'火箭发射', '快速反弹', '大笔买入', '封涨停板', '打开跌停板',
+               '有大买盘', '竞价上涨', '高开5日线', '向上缺口', '60日新高',
+               '60日大幅上涨', '加速下跌', '高台跳水', '大笔卖出', '封跌停板',
+               '打开涨停板', '有大卖盘', '竞价下跌', '低开5日线', '向下缺口',
                '60日新低', '60日大幅下跌'}
     """
     url = "http://push2ex.eastmoney.com/getAllStockChanges"
@@ -568,7 +568,7 @@ def web_data(code, start='19000101', end=None, freq='d', fqt=1):
 def latest_trade_date():
     date=stock_realtime('上证指数')['时间'].values[0][:10]
     return date
-    
+
 
 # 获取单只或多只证券（股票、基金、债券、期货)的收盘价格dataframe
 def get_price(code_list, start='19000101', end=None, freq='d', fqt=1):
@@ -577,7 +577,7 @@ def get_price(code_list, start='19000101', end=None, freq='d', fqt=1):
     '''
     if isinstance(code_list, str):
         code_list = [code_list]
-    
+
     if end is None:
         end=latest_trade_date()
 
@@ -618,7 +618,7 @@ def get_data(code_list, start='19000101', end=None, freq='d', fqt=1):
 
     data_list = []
     pbar = tqdm(total=len(code_list))
-    
+
     @multitasking.task
     #@retry(tries=3, delay=1)
     @func_set_timeout(10)
@@ -641,7 +641,7 @@ def index_code_name():
 
 #获取指数历史交易数据
 def get_index_data(code_list, start='19000101', end=None, freq='d'):
-    
+
     if isinstance(code_list, str):
         code_list = [code_list]
     if end is None:
@@ -649,7 +649,7 @@ def get_index_data(code_list, start='19000101', end=None, freq='d'):
 
     data_list = []
     pbar = tqdm(total=len(code_list))
-    
+
     @multitasking.task
     @func_set_timeout(5)
     def run(code):
@@ -669,12 +669,12 @@ def get_index_data(code_list, start='19000101', end=None, freq='d'):
 # 获取指数价格数据
 def get_index_price(code_list, start='19000101', end=None, freq='d'):
     '''code_list输入指数list列表
-   
+
     '''
-    
+
     if isinstance(code_list, str):
         code_list = [code_list]
-    
+
     if end is None:
         end=latest_trade_date()
 
@@ -688,7 +688,7 @@ def get_index_price(code_list, start='19000101', end=None, freq='d'):
             pbar.update()
         except:
             pass
-            
+
     pbar = tqdm(total=len(code_list))
     data_list = []
     for code in tqdm(code_list):
@@ -1146,7 +1146,7 @@ def fund_data(code_list):
         code_list = [code_list]
     data_list = []
     pbar = tqdm(total=len(code_list))
-    
+
     @multitasking.task
     @func_set_timeout(5)
     def run(code):
