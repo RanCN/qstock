@@ -62,13 +62,14 @@ def HA_kline(df):
     return kline(data,title='股票平均K线图（Heikin-Ashi）')
 
 # 股票K线图
-def kline(df, mas=5, mal=20, notebook=True,title="股票K线图"):
+def kline(df, mas=5, mal=20, notebook=False,title="股票K线图"):
     # 计算技术指标
     data = df.dropna().copy(deep=True)
     data['mas'] = data.close.rolling(mas).mean()
     data['mal'] = data.close.rolling(mal).mean()
     data['macd'], data['macdsignal'], data['macdhist'] = MACD(data.close)
     attr = list(data.index.strftime('%Y%m%d'))
+
     try:
         vol = data["volume"].tolist()
     except:

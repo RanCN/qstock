@@ -296,6 +296,7 @@ class TurtleSystem:
     position = {s: 
                   {t: None for t in self.codes}
                 for s in self.sys_list}
+    
 
     for i, (ts, row) in enumerate(self.data.iterrows()):
       for t in self.codes:
@@ -304,7 +305,9 @@ class TurtleSystem:
       self.portfolio[i] = deepcopy(position)
       self.portfolio[i]['date'] = ts
       self.portfolio[i]['cash'] = copy(self.cash)
+      print(self.portfolio[i])
       self.portfolio_value = self._calc_portfolio_value(self.portfolio[i])
+
 
   def get_portfolio_values(self):
     vals = []
