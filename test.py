@@ -35,21 +35,26 @@ pro = ts.pro_api('1e4782bea79bcd044c3ba84497918e2da96895b81722f6cfddcc775b')
 
 qs.back_test(['鸿博股份'],'sh',1000000.0, '2023-01-20', '2023-09-04')
 
-data = [
-    ['2023-04-01', 5],
-    ['2023-04-02', 10],
-    ['2023-04-03', 20],
-    ['2023-04-04', 2.5],
-]
-df = pd.DataFrame(data, columns=['date', 'close'])
-port_values = df['close']
-returns = port_values / port_values.shift(1)
+# df=qs.realtime_data('概念板块')
+#查看前几行
+# df.head()
+# print(df)
+
+# data = [
+#     ['2023-04-01', 5],
+#     ['2023-04-02', 10],
+#     ['2023-04-03', 20],
+#     ['2023-04-04', 2.5],
+# ]
+# df = pd.DataFrame(data, columns=['date', 'close'])
+# port_values = df['close']
+# returns = port_values / port_values.shift(1)
 # print(df)
 # print(returns)
 # print(port_values.shift(1))
 
-log_returns = np.log(returns)
-cum_rets = log_returns.cumsum()
+# log_returns = np.log(returns)
+# cum_rets = log_returns.cumsum()
 
 
 # print(returns)
@@ -67,4 +72,4 @@ cum_rets = log_returns.cumsum()
 # plt.tight_layout()
 # plt.show() 
 
-porperty = {'S1': {'鸿博股份': None}, 'S2': {'鸿博股份': None}, 'date': Timestamp('2023-06-20 00:00:00'), 'cash': 1006217.7199999997}
+# porperty = {'S1': {'鸿博股份': None}, 'S2': {'鸿博股份': None}, 'date': Timestamp('2023-06-20 00:00:00'), 'cash': 1006217.7199999997}
