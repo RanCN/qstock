@@ -33,3 +33,5 @@ from qstock.stock.ths_em_pool import *
 #回测模块
 from qstock.backtest.vec_backtest import *
 from qstock.backtest.turtle import *
+
+from .backtest2 import *

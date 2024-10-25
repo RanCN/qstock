@@ -33,7 +33,7 @@ pro = ts.pro_api('1e4782bea79bcd044c3ba84497918e2da96895b81722f6cfddcc775b')
 
 # qs.kline(df)
 
-qs.back_test(['鸿博股份'],'sh',1000000.0, '2023-01-20', '2023-09-04')
+qs.back_test(['鸿博股份', '高新发展'],'sh',1000000.0, '2023-03-03', '2023-09-05')
 
 # df=qs.realtime_data('概念板块')
 #查看前几行
