@@ -119,6 +119,25 @@ class TurtleSystem:
     self._calc_N()
 
   def _get_data(self):
+    """
+    将列数据，转化为每行以date为维度的数据，如
+                name    code    open    high     low   close  volume      turnover  turnover_rate
+    date                                                                                         
+    2023-08-29  剑桥科技  603083  101.98  105.65   99.59  105.10  276816  1.296997e+09          10.63
+    2023-08-30  剑桥科技  603083  104.49  108.02  104.49  106.84  253649  1.223234e+09           9.74
+    2023-08-29  鸿博股份  002229  181.74  194.14  178.88  191.14  899143  3.431788e+09          18.23
+    2023-08-30  鸿博股份  002229  191.43  199.66  187.55  195.59  911834  3.600415e+09          18.49
+    2023-08-29  高新发展  000628   44.24   47.55   43.96   47.27   68247  9.921511e+07           3.55
+    2023-08-30  高新发展  000628   46.83   48.21   46.46   47.83   38778  5.827669e+07           2.02
+
+    转化为
+
+    name          剑桥科技    高新发展    鸿博股份    剑桥科技   高新发展    鸿博股份  ...          剑桥科技         高新发展          鸿博股份          剑桥科技          高新发展          鸿博股份
+                  code    code    code    open   open    open  ...      turnover     turnover      turnover turnover_rate turnover_rate turnover_rate
+    date                                                       ...                                                                                   
+    2023-08-29  603083  000628  002229  101.98  44.24  181.74  ...  1.296997e+09  99215109.40  3.431788e+09         10.63          3.55         18.23
+    2023-08-30  603083  000628  002229  104.49  46.83  191.43  ...  1.223234e+09  58276685.05  3.600415e+09          9.74          2.02         18.49
+    """
     # Gets data for all codes
     df = get_data(self.codes,start=self.start,end=self.end,fqt=2)
     df.set_index([df.index,'name'],inplace=True)
@@ -174,9 +193,14 @@ class TurtleSystem:
       units *= (1 - scale * self.risk_reduction_rate)
     return units
 
+  """
+  计算所有持仓的收益，之后加上剩下的仓位
+  """
   def _calc_portfolio_value(self, portfolio):
-    pv = sum([v1['value'] for v0 in portfolio.values() if type(v0) is dict 
-              for k1, v1 in v0.items() if v1 is not None])
+    values = [v1['value'] for v0 in portfolio.values() if type(v0) is dict 
+              for k1, v1 in v0.items() if v1 is not None]
+    pv = sum(values)
+          
     pv += self.cash
     if np.isnan(pv):
       raise ValueError(f"PV = {pv}\n{portfolio}")
@@ -294,18 +318,21 @@ class TurtleSystem:
     # Runs backtest on the turtle strategy
     self.portfolio = {}
     position = {s: 
-                  {t: None for t in self.codes}
+                  {code: None for code in self.codes}
                 for s in self.sys_list}
-    
-
+    """
+    遍历每天、每个codes、每个system，执行_run_system生成每天的position[system][code]数据
+    """
     for i, (ts, row) in enumerate(self.data.iterrows()):
-      for t in self.codes:
+      for code in self.codes:
         for s, system in enumerate(self.sys_list):
-          position[system][t] = self._run_system(t, row[t], position[system][t])
+          """
+          row[code]即该code该日期下的kline数据，position即该code该日期下的持仓数据
+          """
+          position[system][code] = self._run_system(code, row[code], position[system][code])
       self.portfolio[i] = deepcopy(position)
       self.portfolio[i]['date'] = ts
       self.portfolio[i]['cash'] = copy(self.cash)
-      print(self.portfolio[i])
       self.portfolio_value = self._calc_portfolio_value(self.portfolio[i])
 
 
@@ -375,9 +402,14 @@ def back_test(codes,index='sh',init_account_size=1000000.0, start='2010-01-01',e
     sys = TurtleSystem(codes=codes, init_account_size=init_account_size, start=start,end=end)
     sys.run()
     port_values = sys.get_portfolio_values()
+    print(port_values)
+    """
+    每日收益比
+    """
     returns = port_values / port_values.shift(1)
     log_returns = np.log(returns)
     cum_rets = log_returns.cumsum()
+    print(cum_rets)
     base = get_data(index,start=sys.start, end=sys.end)
     base['returns'] = base['close'] / base['close'].shift(1)
     base['log_returns'] = np.log(base['returns'])
